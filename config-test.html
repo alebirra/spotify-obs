@@ -710,6 +710,14 @@
                         <div class="range-value"><span id="discOut">200</span>px</div>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <label class="form-label">Progress Height</label>
+                      <div class="range-group">
+                        <input id="bar" class="range-input" type="range" min="0" max="16" step="1" value="6"
+                          oninput="barOut.textContent=this.value" />
+                        <div class="range-value"><span id="barOut">6</span>px</div>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="form-row">
@@ -733,22 +741,49 @@
 
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Progress Height</label>
+                      <label class="form-label">Progress Width</label>
                       <div class="range-group">
-                        <input id="bar" class="range-input" type="range" min="0" max="16" step="1" value="6"
-                          oninput="barOut.textContent=this.value" />
-                        <div class="range-value"><span id="barOut">6</span>px</div>
+                        <input id="progressWidth" class="range-input" type="range" min="50" max="100" step="5"
+                          value="100" oninput="progWidthOut.textContent=this.value" />
+                        <div class="range-value"><span id="progWidthOut">100</span>%</div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Corner Radius</label>
+                      <div class="range-group">
+                        <input id="radius" class="range-input" type="range" min="0" max="24" step="1" value="16"
+                          oninput="radOut.textContent=this.value" />
+                        <div class="range-value"><span id="radOut">16</span>px</div>
                       </div>
                     </div>
                   </div>
 
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Progress Width</label>
+                      <label class="form-label">Blur</label>
                       <div class="range-group">
-                        <input id="progressWidth" class="range-input" type="range" min="50" max="100" step="5"
-                          value="100" oninput="progWidthOut.textContent=this.value" />
-                        <div class="range-value"><span id="progWidthOut">100</span>%</div>
+                        <input id="blur" class="range-input" type="range" min="0" max="16" step="1" value="8"
+                          oninput="blurOut.textContent=this.value" />
+                        <div class="range-value"><span id="blurOut">8</span>px</div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Safe Padding</label>
+                      <div class="range-group">
+                        <input id="pad" class="range-input" type="range" min="0" max="32" step="1" value="16"
+                          oninput="padOut.textContent=this.value" />
+                        <div class="range-value"><span id="padOut">16</span>px</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Title Outline</label>
+                      <div class="range-group">
+                        <input id="outline" class="range-input" type="range" min="0" max="2" step="1" value="0"
+                          oninput="outlineOut.textContent=this.value" />
+                        <div class="range-value"><span id="outlineOut">0</span>px</div>
                       </div>
                     </div>
                     <div class="form-group">
@@ -759,44 +794,6 @@
                         <option value="center">Center</option>
                         <option value="right">Right</option>
                       </select>
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label class="form-label">Corner Radius</label>
-                      <div class="range-group">
-                        <input id="radius" class="range-input" type="range" min="0" max="24" step="1" value="16"
-                          oninput="radOut.textContent=this.value" />
-                        <div class="range-value"><span id="radOut">16</span>px</div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">Blur</label>
-                      <div class="range-group">
-                        <input id="blur" class="range-input" type="range" min="0" max="16" step="1" value="8"
-                          oninput="blurOut.textContent=this.value" />
-                        <div class="range-value"><span id="blurOut">8</span>px</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label class="form-label">Safe Padding</label>
-                      <div class="range-group">
-                        <input id="pad" class="range-input" type="range" min="0" max="32" step="1" value="16"
-                          oninput="padOut.textContent=this.value" />
-                        <div class="range-value"><span id="padOut">16</span>px</div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">Title Outline</label>
-                      <div class="range-group">
-                        <input id="outline" class="range-input" type="range" min="0" max="2" step="1" value="0"
-                          oninput="outlineOut.textContent=this.value" />
-                        <div class="range-value"><span id="outlineOut">0</span>px</div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1159,8 +1156,8 @@
       if (s.disc) q.set('disc', s.disc);
       if (s.bar) q.set('bar', s.bar);
       if (s.progressWidth && s.progressWidth !== '100') q.set('progresswidth', s.progressWidth);
-      if (s.titlesize && s.titlesize !== '24') q.set('titlesize', s.titlesize);
-      if (s.artistsize && s.artistsize !== '15') q.set('artistsize', s.artistsize);
+      if (s.titlesize) q.set('titlesize', s.titlesize);
+      if (s.artistsize) q.set('artistsize', s.artistsize);
       if (s.textAlign && s.textAlign !== 'auto') q.set('textalign', s.textAlign);
       if (s.radius) q.set('radius', s.radius);
       if (s.blur) q.set('blur', s.blur);
@@ -1213,8 +1210,12 @@
       els.url.textContent = u;
 
       // Add demo parameter to preview URL only (not to the generated URL)
-      const previewUrl = u + (u.includes('?') ? '&' : '?') + 'demo=1';
-      els.preview.src = els.demo.checked ? previewUrl : u;
+      // Add timestamp to force iframe reload when parameters change
+      const timestamp = Date.now();
+      const previewUrl = u + (u.includes('?') ? '&' : '?') + 'demo=1&_t=' + timestamp;
+      const finalUrl = els.demo.checked ? previewUrl : (u + (u.includes('?') ? '&' : '?') + '_t=' + timestamp);
+      
+      els.preview.src = finalUrl;
     }
 
     // Tab switching
