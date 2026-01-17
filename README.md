@@ -1,4 +1,4 @@
-# 🎵 BirraStream - Overlay Spotify per OBS Studio
+# 🎵 SpotyStream by alebirra - Overlay Spotify
 
 **La guida completa per mostrare la musica che stai ascoltando nelle tue dirette streaming**
 
@@ -8,7 +8,7 @@
 
 ## 📖 Indice
 
-1. [Cos'è BirraStream](#cosè-BirraStream)
+1. [Cos'è SpotyStream](#cosè-SpotyStream)
 2. [Cosa Ti Serve](#cosa-ti-serve)
 3. [Setup Iniziale - Passo per Passo](#setup-iniziale---passo-per-passo)
 4. [Come Configurare l'Overlay](#come-configurare-loverlay)
@@ -21,9 +21,9 @@
 
 ---
 
-## Cos'è BirraStream
+## Cos'è SpotyStream
 
-BirraStream è un **overlay grafico** che mostra in tempo reale la musica che stai ascoltando su Spotify durante le tue dirette streaming su piattaforme come Twitch, YouTube, Facebook Gaming, ecc.
+SpotyStream è un **overlay grafico** che mostra in tempo reale la musica che stai ascoltando su Spotify durante le tue dirette streaming su piattaforme come Twitch, YouTube, Facebook Gaming, ecc.
 
 **Cosa vedranno i tuoi spettatori:**
 - 🎨 Copertina dell'album (come disco in vinile o card moderna)
@@ -87,7 +87,7 @@ Questa è la parte più importante. **Leggi con attenzione e segui ESATTAMENTE q
 
    **App name** (Nome app):
    ```
-   BirraStream Overlay
+   SpotyStream Overlay
    ```
    *(puoi mettere il nome che vuoi, non cambia nulla)*
 
@@ -973,7 +973,7 @@ Puoi:
 
 ## 🎉 Conclusione
 
-Congratulazioni per aver configurato BirraStream! Ora hai un overlay professionale per mostrare la musica che ascolti durante le tue dirette.
+Congratulazioni per aver configurato SpotyStream! Ora hai un overlay professionale per mostrare la musica che ascolti durante le tue dirette.
 
 **Ricorda**:
 - ⭐ Sperimenta con i preset per trovare lo stile perfetto
@@ -982,7 +982,7 @@ Congratulazioni per aver configurato BirraStream! Ora hai un overlay professiona
 - 💾 Salva l'URL generato per non perderlo
 - 🔄 Aggiorna il token se l'overlay smette di funzionarsi ricaricando la pagina in OBS
 
-### Ti è piaciuto BirraStream?
+### Ti è piaciuto SpotyStream?
 
 - ⭐ Lascia una stella su [GitHub](https://github.com/alebirra/spotify-obs)
 - 💬 Scrivimi su Telegram: [@alebirra](https://t.me/alebirra)
@@ -1004,7 +1004,7 @@ Questo progetto è rilasciato sotto licenza MIT - sei libero di usarlo, modifica
 
 - Spotify per le API
 - La community di OBS Studio
-- Tutti gli streamer che usano BirraStream
+- Tutti gli streamer che usano SpotyStream
 
 ---
 
