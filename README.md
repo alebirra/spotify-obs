@@ -14,7 +14,7 @@
 4. [Come Configurare l'Overlay](#come-configurare-loverlay)
 5. [Guida Completa alle Funzionalità](#guida-completa-alle-funzionalità)
 6. [Aggiungere l'Overlay in OBS](#aggiungere-loverlay-in-obs)
-7. [Preset](#preset)
+7. [Preset](#-preset-preset-rapidi)
 8. [Risoluzione Problemi](#risoluzione-problemi)
 9. [Domande Frequenti (FAQ)](#domande-frequenti-faq)
 10. [Contatti e Supporto](#contatti-e-supporto)
