@@ -14,7 +14,7 @@
 4. [Come Configurare l'Overlay](#come-configurare-loverlay)
 5. [Guida Completa alle Funzionalità](#guida-completa-alle-funzionalità)
 6. [Aggiungere l'Overlay in OBS](#aggiungere-loverlay-in-obs)
-7. [Preset Pronti all'Uso](#preset-pronti-alluso)
+7. [Preset](#preset)
 8. [Risoluzione Problemi](#risoluzione-problemi)
 9. [Domande Frequenti (FAQ)](#domande-frequenti-faq)
 10. [Contatti e Supporto](#contatti-e-supporto)
@@ -193,7 +193,7 @@ Sulla destra vedrai la **Live Preview** (Anteprima dal vivo) che ti mostra in te
 
 ### 📑 Tab 1: BASIC (Impostazioni di Base)
 
-#### 🎯 Quick Presets (Preset Rapidi)
+#### 🎯 Preset (Preset Rapidi)
 
 I preset sono **configurazioni già pronte** che cambiano istantaneamente l'aspetto dell'overlay. Perfetti per iniziare!
 
@@ -203,15 +203,8 @@ Clicca su uno di questi pulsanti per provare:
 - **Card** - Copertina moderna stile carta
 - **Bar** - Barra minimalista in basso
 - **Stacked** - Tutto centrato e impilato
-- **Transparent** - Completamente trasparente
-- **Gaming** - Stile gaming con effetti neon
 - **Lo-Fi** - Atmosfera rilassata e vintage
-- **Cyberpunk** - Colori elettrici e futuristici
-- **Elegant** - Pulito e professionale
-- **Party** - Colorato ed energico
 - **Cozy** - Caldo e accogliente
-- **Streamer** - Ottimizzato per streaming
-- **Focus** - Minimalista per non distrarre
 - **Ultra Minimal** - Solo il necessario
 
 > 💡 **Consiglio**: Prova tutti i preset per vedere quale ti piace di più! Poi potrai personalizzarlo ulteriormente.
