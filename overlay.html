@@ -683,33 +683,50 @@
     }
 
     /* Visual Effects */
-    .particles::before {
-      content: '';
+    #particles-container {
       position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(2px 2px at 20px 30px, var(--accent), transparent),
-        radial-gradient(2px 2px at 40px 70px, var(--accent), transparent),
-        radial-gradient(1px 1px at 90px 40px, var(--accent), transparent),
-        radial-gradient(1px 1px at 130px 80px, var(--accent), transparent),
-        radial-gradient(2px 2px at 160px 30px, var(--accent), transparent);
-      background-size: 200px 100px;
-      animation: particles 20s linear infinite;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-      opacity: 0.3;
+      z-index: 1000;
+      overflow: hidden;
     }
 
-    @keyframes particles {
-      0% {
-        transform: translateY(0);
-      }
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--particle-color, white);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: var(--particle-opacity, 0.8);
+      animation: float-particle 20s ease-in-out infinite;
+    }
 
+    @keyframes float-particle {
+
+      0%,
       100% {
-        transform: translateY(-100px);
+        transform: translateY(0) translateX(0);
+      }
+
+      25% {
+        transform: translateY(-30px) translateX(10px);
+      }
+
+      50% {
+        transform: translateY(-60px) translateX(-5px);
+      }
+
+      75% {
+        transform: translateY(-30px) translateX(-10px);
       }
     }
 
-    .color-breathing {
+    .color-breathing .artbox,
+    .color-breathing .disc {
       animation: breathe 4s ease-in-out infinite;
     }
 
@@ -717,11 +734,40 @@
 
       0%,
       100% {
-        filter: hue-rotate(0deg) brightness(1);
+        filter: brightness(1) saturate(1);
       }
 
       50% {
-        filter: hue-rotate(30deg) brightness(1.1);
+        filter: brightness(var(--breathing-max-brightness, 1.15)) saturate(1.3);
+      }
+    }
+
+    /* Dynamic breathing glow using accent color */
+    .color-breathing .artbox::before,
+    .color-breathing .disc::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: var(--breathing-color, var(--accent));
+      opacity: 0;
+      animation: breathe-glow 4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(20px);
+    }
+
+    @keyframes breathe-glow {
+
+      0%,
+      100% {
+        opacity: 0;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(1.1);
       }
     }
 
@@ -734,28 +780,87 @@
       filter: blur(0px) brightness(1);
     }
 
-    .waveform .wrap::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg,
-          var(--accent) 0%, transparent 20%, var(--accent) 40%,
-          transparent 60%, var(--accent) 80%, transparent 100%);
-      animation: waveform 2s ease-in-out infinite;
+    .waveform .wrap {
+      position: relative;
     }
 
-    @keyframes waveform {
+    .waveform-container {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 40px;
+      z-index: 10;
+    }
+
+    .waveform-bar {
+      width: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: wave-bar 1.2s ease-in-out infinite;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .waveform-bar:nth-child(1) {
+      height: 8px;
+      animation-delay: 0s;
+    }
+
+    .waveform-bar:nth-child(2) {
+      height: 16px;
+      animation-delay: 0.1s;
+    }
+
+    .waveform-bar:nth-child(3) {
+      height: 24px;
+      animation-delay: 0.2s;
+    }
+
+    .waveform-bar:nth-child(4) {
+      height: 32px;
+      animation-delay: 0.3s;
+    }
+
+    .waveform-bar:nth-child(5) {
+      height: 40px;
+      animation-delay: 0.4s;
+    }
+
+    .waveform-bar:nth-child(6) {
+      height: 32px;
+      animation-delay: 0.5s;
+    }
+
+    .waveform-bar:nth-child(7) {
+      height: 24px;
+      animation-delay: 0.6s;
+    }
+
+    .waveform-bar:nth-child(8) {
+      height: 16px;
+      animation-delay: 0.7s;
+    }
+
+    .waveform-bar:nth-child(9) {
+      height: 8px;
+      animation-delay: 0.8s;
+    }
+
+    @keyframes wave-bar {
 
       0%,
       100% {
-        transform: scaleY(1);
+        transform: scaleY(0.4);
+        opacity: 0.6;
       }
 
       50% {
-        transform: scaleY(2);
+        transform: scaleY(1);
+        opacity: 1;
       }
     }
 
@@ -926,6 +1031,7 @@
 </head>
 
 <body>
+  <div id="particles-container"></div>
   <div id="card" class="wrap">
     <div id="inner" class="inner">
       <div id="disc" class="disc spin">
@@ -970,35 +1076,35 @@
     const root = document.documentElement.style;
 
     const THEMES = {
-      spotify: { panel: 'rgba(18,18,18,0.72)', text: '#eaeaea', muted: '#b6bcc4', accent: '#1db954', radius: 16, blur: 8 },
-      obsdark: { panel: 'rgba(24,24,27,0.72)', text: '#e6e7ea', muted: '#9da3ad', accent: '#22d3ee', radius: 14, blur: 6 },
-      minimal: { panel: 'rgba(0,0,0,0.34)', text: '#ffffff', muted: '#cfcfcf', accent: '#ffffff', radius: 12, blur: 2, bar: 4, shadow: 0 },
-      neon: { panel: 'rgba(8,10,22,0.62)', text: '#e9f0ff', muted: '#9ab0ff', accent: '#7cf4ff', radius: 14, blur: 10 },
-      oldradio: { panel: 'rgba(64,50,34,0.62)', text: '#fff7e6', muted: '#eed9b7', accent: '#ffb84d', radius: 12, blur: 3, bar: 4 },
-      blue: { panel: 'rgba(10,24,48,0.55)', text: '#e6f0ff', muted: '#a9c1ff', accent: '#4da3ff', radius: 16, blur: 8 },
-      red: { panel: 'rgba(48,12,18,0.52)', text: '#ffeaea', muted: '#ffb3b3', accent: '#ff4d4d', radius: 16, blur: 8 },
-      yellow: { panel: 'rgba(48,40,12,0.52)', text: '#fff9db', muted: '#ffe7a3', accent: '#ffd43b', radius: 16, blur: 8 },
-      slate: { panel: 'rgba(0,0,0,0.55)', text: '#ffffff', muted: '#c7c7c7', accent: '#1db954', radius: 16, blur: 6 },
-      twitch: { panel: 'rgba(16,12,26,0.66)', text: '#ede9fe', muted: '#c4b5fd', accent: '#9146FF', radius: 16, blur: 8 },
-      ytred: { panel: 'rgba(26,8,8,0.66)', text: '#ffecec', muted: '#ffb4b4', accent: '#FF0033', radius: 16, blur: 8 },
-      aqua: { panel: 'rgba(10,24,24,0.55)', text: '#e6fffb', muted: '#a8fff2', accent: '#12d6c5', radius: 16, blur: 8 },
-      cyber: { panel: 'rgba(6,8,18,0.62)', text: '#d9f2ff', muted: '#8dd6ff', accent: '#00ffe1', radius: 16, blur: 10 },
-      cyberpunk: { panel: 'rgba(0,0,20,0.9)', text: '#00ffff', muted: '#0099cc', accent: '#ff0080', radius: 16, blur: 10 },
-      pastel: { panel: 'rgba(28,25,23,0.45)', text: '#fff7ed', muted: '#fed7aa', accent: '#f9a8d4', radius: 18, blur: 6 },
-      gaming: { panel: 'rgba(0,0,0,0.85)', text: '#00ff88', muted: '#66ffaa', accent: '#ff0066', radius: 16, blur: 12 },
-      lofi: { panel: 'rgba(42,24,16,0.6)', text: '#f4e4c1', muted: '#d4b896', accent: '#e67e22', radius: 20, blur: 4 },
-      retro: { panel: 'rgba(26,10,42,0.7)', text: '#ff6ec7', muted: '#c77dff', accent: '#7209b7', radius: 12, blur: 6 },
-      elegant: { panel: 'rgba(248,249,250,0.9)', text: '#1a202c', muted: '#4a5568', accent: '#3182ce', radius: 18, blur: 8 },
-      party: { panel: 'rgba(0,0,0,0.8)', text: '#ffffff', muted: '#cccccc', accent: '#ff1493', radius: 16, blur: 10 },
-      cozy: { panel: 'rgba(45,24,16,0.65)', text: '#f7e6d3', muted: '#d4b896', accent: '#cd853f', radius: 16, blur: 6 },
-      focus: { panel: 'rgba(0,0,0,0.3)', text: '#e2e8f0', muted: '#a0aec0', accent: '#4299e1', radius: 8, blur: 2 },
-      sunset: { panel: 'rgba(255,94,77,0.2)', text: '#2d3748', muted: '#4a5568', accent: '#ed8936', radius: 16, blur: 8 },
-      ocean: { panel: 'rgba(0,119,190,0.3)', text: '#ffffff', muted: '#b3d9ff', accent: '#00d4ff', radius: 16, blur: 8 },
-      forest: { panel: 'rgba(34,139,34,0.3)', text: '#f0fff0', muted: '#98fb98', accent: '#32cd32', radius: 16, blur: 6 },
-      midnight: { panel: 'rgba(25,25,112,0.4)', text: '#e6e6fa', muted: '#c5c5ff', accent: '#9370db', radius: 16, blur: 10 },
-      aurora: { panel: 'rgba(0,100,100,0.3)', text: '#f0ffff', muted: '#afeeee', accent: '#40e0d0', radius: 18, blur: 8 },
-      gradient: { panel: 'linear-gradient(135deg, rgba(255,0,150,0.3), rgba(0,204,255,0.3))', text: '#ffffff', muted: '#e0e0e0', accent: '#ff6b9d', radius: 16, blur: 8 },
-      monochrome: { panel: 'rgba(0,0,0,0.2)', text: '#ffffff', muted: '#888888', accent: '#ffffff', radius: 4, blur: 0, shadow: 0 }
+      spotify: { panel: 'rgba(18,18,18,0.72)', text: '#eaeaea', muted: '#b6bcc4', accent: '#1db954', particle: '#1db954', radius: 16, blur: 8 },
+      obsdark: { panel: 'rgba(24,24,27,0.72)', text: '#e6e7ea', muted: '#9da3ad', accent: '#22d3ee', particle: '#22d3ee', radius: 14, blur: 6 },
+      minimal: { panel: 'rgba(0,0,0,0.34)', text: '#ffffff', muted: '#cfcfcf', accent: '#ffffff', particle: '#ffffff', radius: 12, blur: 2, bar: 4, shadow: 0 },
+      neon: { panel: 'rgba(8,10,22,0.62)', text: '#e9f0ff', muted: '#9ab0ff', accent: '#7cf4ff', particle: '#7cf4ff', radius: 14, blur: 10 },
+      oldradio: { panel: 'rgba(64,50,34,0.62)', text: '#fff7e6', muted: '#eed9b7', accent: '#ffb84d', particle: '#ffb84d', radius: 12, blur: 3, bar: 4 },
+      blue: { panel: 'rgba(10,24,48,0.55)', text: '#e6f0ff', muted: '#a9c1ff', accent: '#4da3ff', particle: '#4da3ff', radius: 16, blur: 8 },
+      red: { panel: 'rgba(48,12,18,0.52)', text: '#ffeaea', muted: '#ffb3b3', accent: '#ff4d4d', particle: '#ff4d4d', radius: 16, blur: 8 },
+      yellow: { panel: 'rgba(48,40,12,0.52)', text: '#fff9db', muted: '#ffe7a3', accent: '#ffd43b', particle: '#ffd43b', radius: 16, blur: 8 },
+      slate: { panel: 'rgba(0,0,0,0.55)', text: '#ffffff', muted: '#c7c7c7', accent: '#1db954', particle: '#ffffff', radius: 16, blur: 6 },
+      twitch: { panel: 'rgba(16,12,26,0.66)', text: '#ede9fe', muted: '#c4b5fd', accent: '#9146FF', particle: '#9146FF', radius: 16, blur: 8 },
+      ytred: { panel: 'rgba(26,8,8,0.66)', text: '#ffecec', muted: '#ffb4b4', accent: '#FF0033', particle: '#FF0033', radius: 16, blur: 8 },
+      aqua: { panel: 'rgba(10,24,24,0.55)', text: '#e6fffb', muted: '#a8fff2', accent: '#12d6c5', particle: '#12d6c5', radius: 16, blur: 8 },
+      cyber: { panel: 'rgba(6,8,18,0.62)', text: '#d9f2ff', muted: '#8dd6ff', accent: '#00ffe1', particle: '#00ffe1', radius: 16, blur: 10 },
+      cyberpunk: { panel: 'rgba(0,0,20,0.9)', text: '#00ffff', muted: '#0099cc', accent: '#ff0080', particle: '#00ffff', radius: 16, blur: 10 },
+      pastel: { panel: 'rgba(28,25,23,0.45)', text: '#fff7ed', muted: '#fed7aa', accent: '#f9a8d4', particle: '#f9a8d4', radius: 18, blur: 6 },
+      gaming: { panel: 'rgba(0,0,0,0.85)', text: '#00ff88', muted: '#66ffaa', accent: '#ff0066', particle: '#00ff88', radius: 16, blur: 12 },
+      lofi: { panel: 'rgba(42,24,16,0.6)', text: '#f4e4c1', muted: '#d4b896', accent: '#e67e22', particle: '#f4e4c1', radius: 20, blur: 4 },
+      retro: { panel: 'rgba(26,10,42,0.7)', text: '#ff6ec7', muted: '#c77dff', accent: '#7209b7', particle: '#ff6ec7', radius: 12, blur: 6 },
+      elegant: { panel: 'rgba(248,249,250,0.9)', text: '#1a202c', muted: '#4a5568', accent: '#3182ce', particle: '#3182ce', radius: 18, blur: 8 },
+      party: { panel: 'rgba(0,0,0,0.8)', text: '#ffffff', muted: '#cccccc', accent: '#ff1493', particle: '#ff1493', radius: 16, blur: 10 },
+      cozy: { panel: 'rgba(45,24,16,0.65)', text: '#f7e6d3', muted: '#d4b896', accent: '#cd853f', particle: '#f7e6d3', radius: 16, blur: 6 },
+      focus: { panel: 'rgba(0,0,0,0.3)', text: '#e2e8f0', muted: '#a0aec0', accent: '#4299e1', particle: '#4299e1', radius: 8, blur: 2 },
+      sunset: { panel: 'rgba(255,94,77,0.2)', text: '#2d3748', muted: '#4a5568', accent: '#ed8936', particle: '#ed8936', radius: 16, blur: 8 },
+      ocean: { panel: 'rgba(0,119,190,0.3)', text: '#ffffff', muted: '#b3d9ff', accent: '#00d4ff', particle: '#00d4ff', radius: 16, blur: 8 },
+      forest: { panel: 'rgba(34,139,34,0.3)', text: '#f0fff0', muted: '#98fb98', accent: '#32cd32', particle: '#98fb98', radius: 16, blur: 6 },
+      midnight: { panel: 'rgba(25,25,112,0.4)', text: '#e6e6fa', muted: '#c5c5ff', accent: '#9370db', particle: '#c5c5ff', radius: 16, blur: 10 },
+      aurora: { panel: 'rgba(0,100,100,0.3)', text: '#f0ffff', muted: '#afeeee', accent: '#40e0d0', particle: '#40e0d0', radius: 18, blur: 8 },
+      gradient: { panel: 'linear-gradient(135deg, rgba(255,0,150,0.3), rgba(0,204,255,0.3))', text: '#ffffff', muted: '#e0e0e0', accent: '#ff6b9d', particle: '#ff6b9d', radius: 16, blur: 8 },
+      monochrome: { panel: 'rgba(0,0,0,0.2)', text: '#ffffff', muted: '#888888', accent: '#ffffff', particle: '#888888', radius: 4, blur: 0, shadow: 0 }
     };
     const FONTS = {
       inter: 'https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap',
@@ -1012,6 +1118,7 @@
       if (!v) return;
       if (v.panel) root.setProperty('--panel', v.panel); if (v.text) root.setProperty('--text', v.text);
       if (v.muted) root.setProperty('--muted', v.muted); if (v.accent) root.setProperty('--accent', v.accent);
+      if (v.particle) root.setProperty('--particle-color', v.particle);
       if (v.radius != null) root.setProperty('--radius', v.radius + 'px'); if (v.blur != null) root.setProperty('--blur', v.blur + 'px');
       if (v.bar != null) root.setProperty('--bar-h', v.bar + 'px'); if (v.shadow === 0) root.setProperty('--shadow', 'none');
     };
@@ -1113,9 +1220,176 @@
 
     /* visual effects */
     if (getBool('particles', false)) document.body.classList.add('particles');
-    if (getBool('colorbreathing', false)) document.body.classList.add('color-breathing');
-    if (getBool('waveform', false)) document.body.classList.add('waveform');
+
+    // Color breathing setup
+    const customBreathingColor = p.get('breathingcolor');
+    const hasColorBreathing = getBool('colorbreathing', false);
+
+    // Function to convert hex to HSL
+    function hexToHSL(hex) {
+      hex = hex.replace(/^#/, '');
+      let r = parseInt(hex.substring(0, 2), 16) / 255;
+      let g = parseInt(hex.substring(2, 4), 16) / 255;
+      let b = parseInt(hex.substring(4, 6), 16) / 255;
+
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+          case g: h = ((b - r) / d + 2) / 6; break;
+          case b: h = ((r - g) / d + 4) / 6; break;
+        }
+      }
+
+      return [h * 360, s * 100, l * 100];
+    }
+
+    // Function to convert HSL to hex
+    function hslToHex(h, s, l) {
+      s /= 100;
+      l /= 100;
+
+      const c = (1 - Math.abs(2 * l - 1)) * s;
+      const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+      const m = l - c / 2;
+      let r, g, b;
+
+      if (h < 60) { r = c; g = x; b = 0; }
+      else if (h < 120) { r = x; g = c; b = 0; }
+      else if (h < 180) { r = 0; g = c; b = x; }
+      else if (h < 240) { r = 0; g = x; b = c; }
+      else if (h < 300) { r = x; g = 0; b = c; }
+      else { r = c; g = 0; b = x; }
+
+      const toHex = (n) => {
+        const hex = Math.round((n + m) * 255).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      };
+
+      return '#' + toHex(r) + toHex(g) + toHex(b);
+    }
+
+    // Function to update breathing color based on current accent
+    function updateBreathingColor() {
+      if (!hasColorBreathing || customBreathingColor) return; // Only update if breathing is on and no custom color
+
+      const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+
+      // Generate breathing color (shift hue by 30 degrees and increase saturation)
+      if (accentColor.startsWith('#')) {
+        const [h, s, l] = hexToHSL(accentColor);
+        const breathingColor = hslToHex((h + 30) % 360, Math.min(s + 15, 100), l);
+        root.setProperty('--breathing-color', breathingColor);
+      }
+    }
+
+    if (hasColorBreathing) {
+      document.body.classList.add('color-breathing');
+
+      // Read breathing intensity as percentage (0-100)
+      const breathingIntensityRaw = p.get('breathingintensity') || '100';
+
+      // Convert percentage (0-100) to brightness multiplier (0-1.25)
+      // 0% = 0x brightness (invisible), 50% = 0.625x (dim), 100% = 1.25x (bright)
+      const percentage = Math.max(0, Math.min(100, parseFloat(breathingIntensityRaw))) / 100;
+      const breathingIntensity = 0.0 + (percentage * 1.25);
+
+      root.setProperty('--breathing-max-brightness', breathingIntensity.toString());
+
+      if (customBreathingColor) {
+        // Use custom breathing color if provided
+        root.setProperty('--breathing-color', customBreathingColor);
+      } else {
+        // Calculate breathing color from current accent color
+        updateBreathingColor();
+      }
+    }
+    if (getBool('waveform', false)) {
+      document.body.classList.add('waveform');
+      // Create waveform bars dynamically
+      const waveContainer = document.createElement('div');
+      waveContainer.className = 'waveform-container';
+      for (let i = 0; i < 9; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'waveform-bar';
+        waveContainer.appendChild(bar);
+      }
+      $('card').appendChild(waveContainer);
+    }
     if (getBool('albumblur', false)) document.body.classList.add('album-blur');
+
+    // Particle effects control
+    const particlesContainer = $('particles-container');
+    let particleCount = 0;
+
+    function createParticles(intensity) {
+      // Clear existing particles
+      particlesContainer.innerHTML = '';
+
+      if (intensity <= 0) return;
+
+      // Calculate number of particles based on intensity (0-100 = 0-80 particles)
+      particleCount = Math.floor(intensity * 0.8);
+
+      // Get viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Create particles
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+
+        // Random position across entire viewport
+        const x = Math.random() * viewportWidth;
+        const y = Math.random() * viewportHeight;
+
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+
+        // Vary animation duration and delay for natural effect
+        const duration = 15 + Math.random() * 10; // 15-25 seconds
+        const delay = Math.random() * 5; // 0-5 seconds delay
+
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    if (getBool('particleeffect', false)) {
+      const particleCountRaw = p.get('particlecount') || '50';
+      const particleOpacityRaw = p.get('particleopacity') || '80';
+      const particleColorRaw = p.get('particlecolor'); // Don't default - let theme handle it
+
+      const particleCount = Math.max(0, Math.min(100, parseFloat(particleCountRaw)));
+      const particleOpacity = Math.max(0, Math.min(100, parseFloat(particleOpacityRaw))) / 100;
+
+      root.setProperty('--particle-opacity', particleOpacity.toString());
+      // Only set custom particle color if explicitly provided in URL
+      if (particleColorRaw) {
+        root.setProperty('--particle-color', particleColorRaw);
+      }
+      createParticles(particleCount);
+
+      // Recreate particles on window resize to maintain distribution
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          createParticles(particleCount);
+        }, 250);
+      });
+    }
 
     const transEffect = p.get('transition') || 'none';
     const animSpeed = parseFloat(p.get('animspeed') || '1');
@@ -1170,7 +1444,7 @@
         artbox.style.backgroundImage = `url('${img}')`;
         const ab2 = $('artbox2'); if (ab2) ab2.style.backgroundImage = `url('${img}')`;
 
-        if (autoAccent) { try { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => { const c = document.createElement('canvas'), x = c.getContext('2d'); c.width = 48; c.height = 48; x.drawImage(im, 0, 0, 48, 48); const d = x.getImageData(0, 0, 48, 48).data; let r = 0, g = 0, b = 0, n = 0; for (let i = 0; i < d.length; i += 4) { if (d[i + 3] < 12) continue; r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; } if (n) { r = (r / n) | 0; g = (g / n) | 0; b = (b / n) | 0; root.setProperty('--accent', `rgb(${r},${g},${b})`); } }; im.src = img; } catch (e) { } }
+        if (autoAccent) { try { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => { const c = document.createElement('canvas'), x = c.getContext('2d'); c.width = 48; c.height = 48; x.drawImage(im, 0, 0, 48, 48); const d = x.getImageData(0, 0, 48, 48).data; let r = 0, g = 0, b = 0, n = 0; for (let i = 0; i < d.length; i += 4) { if (d[i + 3] < 12) continue; r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; } if (n) { r = (r / n) | 0; g = (g / n) | 0; b = (b / n) | 0; const toHex = v => v.toString(16).padStart(2, '0'); root.setProperty('--accent', `#${toHex(r)}${toHex(g)}${toHex(b)}`); if (hasColorBreathing && !customBreathingColor) { updateBreathingColor(); } } }; im.src = img; } catch (e) { } }
       }
 
       const artists = (item.artists || []).map(a => a.name).join(', ');
@@ -1317,9 +1591,8 @@
       const demoImg = 'assets/demo-albumcover.jpg';
       // Fake tracks for demo transition testing
       const tracks = [
-        { name: 'AleBirraBionda (Demo)', artist: 'Birra & Co', img: 'assets/demo-albumcover.jpg', dur: 212000 },
-        { name: 'Neon Lights', artist: 'Cyber Dreams', img: '', dur: 180000 }, // No image fallback
-        { name: 'Retro Wave', artist: 'Synth Masters', img: 'assets/demo-albumcover.jpg', dur: 195000 }
+        { name: 'alebirrabionda (demo)', artist: 'Birra & Co', img: 'assets/demo-albumcover.jpg', dur: 212000 },
+        { name: 'Gigio', artist: 'Gigetto', img: 'assets/demo-albumcover2.jpg', dur: 195000 }
       ];
       let tIdx = 0;
 
