@@ -4,12 +4,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SpotyOBS Configurator</title>
+  <title>SpotyStream Configurator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
+      --bg: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --panel: #1e1e1e;
+      --panel-hover: #252525;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --border-light: rgba(255, 255, 255, 0.05);
+      --muted: #9ca3af;
+      --text: #e5e5e5;
+      --text-secondary: #d1d5db;
+      --text-light: #6b7280;
+      --accent: #1db954;
+      --accent-hover: #1ed760;
+      --success: #34c759;
+      --warning: #ff9500;
+      --danger: #ff3b30;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="light"] {
       --bg: #fafafa;
       --bg-secondary: #ffffff;
       --panel: #ffffff;
@@ -23,19 +48,30 @@
       --text-light: #9ca3af;
       --accent: #007aff;
       --accent-hover: #0056cc;
-      --success: #34c759;
-      --warning: #ff9500;
-      --danger: #ff3b30;
-      --radius: 12px;
-      --radius-sm: 8px;
-      --radius-lg: 16px;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
     * {
-      box-sizing: border-box
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Hide scrollbars */
+    ::-webkit-scrollbar {
+      width: 0px;
+      height: 0px;
+      background: transparent;
+    }
+
+    * {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     html,
@@ -62,7 +98,7 @@
     .header {
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border);
-      padding: 20px 32px;
+      padding: 12px 32px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -70,7 +106,7 @@
     }
 
     .header-content {
-      max-width: 1400px;
+      max-width: 100%;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -111,14 +147,70 @@
       align-items: center;
     }
 
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .theme-toggle-btn {
+      width: 60px;
+      height: 30px;
+      background: var(--border);
+      border-radius: 15px;
+      position: relative;
+      border: 2px solid var(--border-hover);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--border-hover);
+    }
+
+    .theme-toggle-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="light"] .theme-toggle-slider {
+      left: 32px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+
+    .theme-toggle-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      transition: all 0.3s ease;
+      filter: grayscale(1) brightness(0);
+    }
+
+    .theme-toggle-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+
     .main {
       max-width: 1600px;
       margin: 0 auto;
-      padding: 32px;
+      padding: 24px 32px;
       display: grid;
       grid-template-columns: 480px 1fr;
       gap: 32px;
-      min-height: calc(100vh - 84px);
+      min-height: calc(100vh - 72px);
     }
 
     .sidebar {
@@ -127,7 +219,7 @@
       gap: 24px;
       height: fit-content;
       position: sticky;
-      top: 116px;
+      top: 90px;
     }
 
     .nav-tabs {
@@ -167,9 +259,10 @@
     }
 
     .sidebar-content {
-      overflow-y: auto;
+      overflow-y: scroll;
       overflow-x: hidden;
       max-height: calc(100vh - 200px);
+      min-height: calc(100vh - 200px);
     }
 
     .sidebar-content::-webkit-scrollbar {
@@ -212,19 +305,77 @@
     }
 
     .card-header {
-      padding: 24px 24px 0 24px;
+      padding: 24px 24px 16px 24px;
       border-bottom: 1px solid var(--border-light);
       margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .card-title {
-      margin: 0 0 16px 0;
+      margin: 0;
+      /* Removed bottom margin */
       font-size: 18px;
       font-weight: 600;
       color: var(--text);
       display: flex;
       align-items: center;
       gap: 12px;
+    }
+
+    /* Help System */
+    .help-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: help;
+      position: relative;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .help-icon:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .help-tooltip {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 280px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      font-size: 13px;
+      color: var(--text);
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 100;
+      line-height: 1.5;
+      font-weight: 400;
+      text-align: left;
+      white-space: normal;
+    }
+
+    .help-icon:hover .help-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(5px);
     }
 
     .card-title::before {
@@ -276,8 +427,41 @@
       color: var(--text);
       border: 1px solid var(--border);
       font-size: 14px;
-      transition: all 0.15s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
       font-family: inherit;
+    }
+
+    .form-select {
+      padding-right: 56px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 12px 12px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .form-select.open {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 3L1 8h10z'/%3E%3C/svg%3E");
+    }
+
+    .lang-select {
+      width: auto !important;
+      padding: 6px 36px 6px 16px !important;
+      font-size: 13px !important;
+      border-radius: 20px !important;
+      background-position: right 12px center !important;
+      height: 34px !important;
+      line-height: normal;
+      background-color: transparent;
+      border: 1px solid var(--border-light);
+    }
+
+    .lang-select:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-hover);
     }
 
     .form-input:focus,
@@ -285,7 +469,7 @@
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-      background: var(--bg-secondary);
+      background-color: var(--bg-secondary);
     }
 
     .range-group {
@@ -301,6 +485,7 @@
       border-radius: 3px;
       outline: none;
       -webkit-appearance: none;
+      appearance: none;
       border: 1px solid var(--border);
     }
 
@@ -337,7 +522,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 0;
+      padding: 8px 0;
     }
 
     .toggle {
@@ -548,8 +733,15 @@
 <body>
   <div class="dashboard">
     <header class="header">
+
       <div class="header-content">
-        <h1>SpotyOBS Configurator by Alebirra</h1>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <h1>SpotyStream by alebirra</h1>
+          <select id="lang-selector" class="form-select lang-select">
+            <option value="en">🇬🇧 English</option>
+            <option value="it">🇮🇹 Italiano</option>
+          </select>
+        </div>
         <div class="header-controls">
           <div class="demo-toggle">
             <label class="toggle-label">
@@ -559,8 +751,15 @@
           </div>
           <div class="header-actions">
             <button id="copy" class="btn btn-sm">Copy URL</button>
-            <button id="open" class="btn-secondary btn-sm">Open Preview</button>
-            <button id="reset" class="btn-outline btn-sm">Reset</button>
+            <button id="reset" class="btn-outline btn-sm" style="border-radius: 20px">Reset</button>
+            <div class="theme-toggle" onclick="toggleTheme()">
+              <div class="theme-toggle-btn">
+                <div class="theme-toggle-slider">
+                  <span class="theme-toggle-icon">🌙</span>
+                </div>
+              </div>
+              <span class="theme-toggle-label">Light Mode</span>
+            </div>
           </div>
         </div>
       </div>
@@ -569,53 +768,62 @@
     <main class="main">
       <aside class="sidebar">
         <nav class="nav-tabs">
-          <button class="nav-tab active" data-tab="basic">Basic</button>
-          <button class="nav-tab" data-tab="visual">Visual</button>
-          <button class="nav-tab" data-tab="content">Content</button>
-          <button class="nav-tab" data-tab="advanced">Advanced</button>
+          <button class="nav-tab active" data-tab="basic" data-i18n="tab_basic">Basic</button>
+          <button class="nav-tab" data-tab="visual" data-i18n="tab_visual">Visual</button>
+          <button class="nav-tab" data-tab="content" data-i18n="tab_content">Content</button>
+          <button class="nav-tab" data-tab="advanced" data-i18n="tab_advanced">Advanced</button>
         </nav>
 
         <div class="sidebar-content">
           <div class="tab-panel active" id="basic-tab">
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Quick Start</h2>
+                <h2 class="card-title" data-i18n="card_quickstart">Quick Start</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip">Start here! Click a 'Quick Preset' below to instantly change the look. Then
+                    COPY the 'Generated URL' at the bottom and paste it into OBS.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="form-group">
-                    <label class="form-label">Base URL</label>
+                    <label class="form-label" data-i18n="label_baseurl">Base URL</label>
                     <input id="base" class="form-input" type="url"
                       placeholder="https://alebirra.github.io/spotify-obs/overlay.html"
                       value="https://alebirra.github.io/spotify-obs/overlay.html" />
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label">Quick Presets</label>
+                    <label class="form-label" data-i18n="label_presets">Quick Presets</label>
                     <div class="preset-grid">
-                      <button class="btn-outline btn-sm preset-btn" data-preset="record">Record</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="card">Card</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="bar">Bar</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="stacked">Stacked</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="transparent">Transparent</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="gaming">Gaming</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="lofi">Lo-Fi</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="cyberpunk">Cyberpunk</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="elegant">Elegant</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="party">Party</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="cozy">Cozy</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="streamer">Streamer</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="focus">Focus</button>
-                      <button class="btn-outline btn-sm preset-btn" data-preset="ultraminimal">Ultra Minimal</button>
+                      <button class="btn-outline btn-sm preset-btn" data-preset="record"
+                        data-i18n="btn_record">Record</button>
+                      <button class="btn-outline btn-sm preset-btn" data-preset="card"
+                        data-i18n="btn_card">Card</button>
+                      <button class="btn-outline btn-sm preset-btn" data-preset="bar" data-i18n="btn_bar">Bar</button>
+                      <button class="btn-outline btn-sm preset-btn" data-preset="stacked"
+                        data-i18n="btn_stacked">Stacked</button>
+                      <button class="btn-outline btn-sm preset-btn" data-preset="lofi"
+                        data-i18n="btn_lofi">Lo-Fi</button>
+                      <button class="btn-outline btn-sm preset-btn" data-preset="cozy"
+                        data-i18n="btn_cozy">Cozy</button>
+                      <button class="btn-outline btn-sm preset-btn" data-preset="ultraminimal"
+                        data-i18n="btn_minimal">Ultra Minimal</button>
                     </div>
                   </div>
 
                   <div class="divider"></div>
 
                   <div class="form-group">
-                    <label class="form-label">Generated URL</label>
+                    <div
+                      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                      <label class="form-label" style="margin-bottom: 0;" data-i18n="label_generated">Generated
+                        URL</label>
+                      <button id="open" class="btn-secondary btn-sm" style="border-radius: 20px;"
+                        data-i18n="btn_openpreview">Open Preview</button>
+                    </div>
                     <div id="url" class="url-display"></div>
-                    <div class="badge">Copy this URL into OBS → Browser Source</div>
+                    <div class="badge" data-i18n="badge_copyurl">Copy this URL into OBS → Browser Source</div>
                   </div>
                 </div>
               </div>
@@ -623,41 +831,45 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Layout & Style</h2>
+                <h2 class="card-title" data-i18n="card_layout">Layout & Style</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_layout">Choose the shape of your player. 'Vinyl' spins,
+                    'Card' is square. 'Theme' sets the color scheme instantly.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Layout</label>
+                      <label class="form-label" data-i18n="label_layout">Layout</label>
                       <select id="layout" class="form-select">
-                        <option value="record">Record (Vinyl)</option>
-                        <option value="card">Card (Cover)</option>
-                        <option value="bar">Bar (Minimal)</option>
-                        <option value="stacked">Stacked (Center)</option>
-                        <option value="compact">Compact (Mini)</option>
-                        <option value="wide">Wide (Cinematic)</option>
-                        <option value="split">Split (Dual)</option>
-                        <option value="floating">Floating (Overlay)</option>
-                        <option value="corner">Corner (Tiny)</option>
-                        <option value="ticker">Ticker (Scroll)</option>
+                        <option value="record" data-i18n="opt_record">Record (Vinyl)</option>
+                        <option value="card" data-i18n="opt_card">Card (Cover)</option>
+                        <option value="bar" data-i18n="opt_bar">Bar (Minimal)</option>
+                        <option value="stacked" data-i18n="opt_stacked">Stacked (Center)</option>
+                        <option value="compact" data-i18n="opt_compact">Compact (Mini)</option>
+                        <option value="wide" data-i18n="opt_wide">Wide (Cinematic)</option>
+                        <option value="split" data-i18n="opt_split">Split (Dual)</option>
+                        <option value="floating" data-i18n="opt_floating">Floating (Overlay)</option>
+                        <option value="corner" data-i18n="opt_corner">Corner (Tiny)</option>
+                        <option value="ticker" data-i18n="opt_ticker">Ticker (Scroll)</option>
                       </select>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Media Position</label>
+                      <label class="form-label" data-i18n="label_media_pos">Media Position</label>
                       <select id="align" class="form-select">
-                        <option value="left">Left</option>
-                        <option value="right">Right</option>
-                        <option value="center">Center</option>
-                        <option value="top">Top</option>
-                        <option value="bottom">Bottom</option>
+                        <option value="left" data-i18n="opt_left">Left</option>
+                        <option value="right" data-i18n="opt_right">Right</option>
+                        <option value="center" data-i18n="opt_center">Center</option>
+                        <option value="top" data-i18n="opt_top">Top</option>
+                        <option value="bottom" data-i18n="opt_bottom">Bottom</option>
                       </select>
                     </div>
                   </div>
 
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Theme</label>
+                      <label class="form-label" data-i18n="label_theme">Theme</label>
                       <select id="theme" class="form-select">
                         <option value="spotify">Spotify</option>
                         <option value="obsdark">OBS Dark</option>
@@ -681,13 +893,13 @@
                       </select>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Accent Style</label>
+                      <label class="form-label" data-i18n="label_accent_style">Accent Style</label>
                       <select id="accentstyle" class="form-select">
-                        <option value="solid">Solid</option>
-                        <option value="glow">Glow</option>
-                        <option value="gradient">Gradient</option>
-                        <option value="pulse">Pulse</option>
-                        <option value="rainbow">Rainbow</option>
+                        <option value="solid" data-i18n="opt_solid">Solid</option>
+                        <option value="glow" data-i18n="opt_glow">Glow</option>
+                        <option value="gradient" data-i18n="opt_gradient">Gradient</option>
+                        <option value="pulse" data-i18n="opt_pulse">Pulse</option>
+                        <option value="rainbow" data-i18n="opt_rainbow">Rainbow</option>
                       </select>
                     </div>
                   </div>
@@ -697,13 +909,18 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Sizing & Positioning</h2>
+                <h2 class="card-title" data-i18n="card_sizing">Sizing & Positioning</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_sizing">Controls for size and space. Use 'Media Size' to
+                    make the album art bigger
+                    or smaller.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Media Size</label>
+                      <label class="form-label" data-i18n="label_mediasize">Media Size</label>
                       <div class="range-group">
                         <input id="disc" class="range-input" type="range" min="120" max="360" step="2" value="200"
                           oninput="discOut.textContent=this.value" />
@@ -711,7 +928,7 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Progress Height</label>
+                      <label class="form-label" data-i18n="label_progheight">Progress Height</label>
                       <div class="range-group">
                         <input id="bar" class="range-input" type="range" min="0" max="16" step="1" value="6"
                           oninput="barOut.textContent=this.value" />
@@ -722,7 +939,7 @@
 
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Title Size</label>
+                      <label class="form-label" data-i18n="label_titlesize">Title Size</label>
                       <div class="range-group">
                         <input id="titlesize" class="range-input" type="range" min="14" max="64" step="1" value="24"
                           oninput="tsOut.textContent=this.value" />
@@ -730,7 +947,7 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Artist Size</label>
+                      <label class="form-label" data-i18n="label_artistsize">Artist Size</label>
                       <div class="range-group">
                         <input id="artistsize" class="range-input" type="range" min="10" max="32" step="1" value="15"
                           oninput="asOut.textContent=this.value" />
@@ -741,7 +958,7 @@
 
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Progress Width</label>
+                      <label class="form-label" data-i18n="label_progwidth">Progress Width</label>
                       <div class="range-group">
                         <input id="progressWidth" class="range-input" type="range" min="50" max="100" step="5"
                           value="100" oninput="progWidthOut.textContent=this.value" />
@@ -749,7 +966,7 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Corner Radius</label>
+                      <label class="form-label" data-i18n="label_radius">Corner Radius</label>
                       <div class="range-group">
                         <input id="radius" class="range-input" type="range" min="0" max="24" step="1" value="16"
                           oninput="radOut.textContent=this.value" />
@@ -760,7 +977,7 @@
 
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Blur</label>
+                      <label class="form-label" data-i18n="label_blur">Blur</label>
                       <div class="range-group">
                         <input id="blur" class="range-input" type="range" min="0" max="16" step="1" value="8"
                           oninput="blurOut.textContent=this.value" />
@@ -768,7 +985,7 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Safe Padding</label>
+                      <label class="form-label" data-i18n="label_padding">Safe Padding</label>
                       <div class="range-group">
                         <input id="pad" class="range-input" type="range" min="0" max="32" step="1" value="16"
                           oninput="padOut.textContent=this.value" />
@@ -779,7 +996,7 @@
 
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Title Outline</label>
+                      <label class="form-label" data-i18n="label_outline">Title Outline</label>
                       <div class="range-group">
                         <input id="outline" class="range-input" type="range" min="0" max="2" step="1" value="0"
                           oninput="outlineOut.textContent=this.value" />
@@ -787,12 +1004,12 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Text Alignment</label>
+                      <label class="form-label" data-i18n="label_textalign">Text Alignment</label>
                       <select id="textAlign" class="form-select">
-                        <option value="auto">Auto (follows media)</option>
-                        <option value="left">Left</option>
-                        <option value="center">Center</option>
-                        <option value="right">Right</option>
+                        <option value="auto" data-i18n="opt_auto">Auto (follows media)</option>
+                        <option value="left" data-i18n="opt_left">Left</option>
+                        <option value="center" data-i18n="opt_center">Center</option>
+                        <option value="right" data-i18n="opt_right">Right</option>
                       </select>
                     </div>
                   </div>
@@ -802,24 +1019,29 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Behavior</h2>
+                <h2 class="card-title" data-i18n="card_behavior">Behavior & Visibility</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_behavior">Decide what happens during playback. 'Spin while
+                    playing' animates the
+                    vinyl. 'Compact' removes extra spacing.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="toggle-group">
-                    <label class="form-label">Compact spacing</label>
+                    <label class="form-label" data-i18n="label_compact">Compact spacing</label>
                     <input id="compact" type="checkbox" class="toggle" />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Spin while playing</label>
+                    <label class="form-label" data-i18n="label_spin">Spin while playing</label>
                     <input id="spin" type="checkbox" class="toggle" checked />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Keep label upright</label>
+                    <label class="form-label" data-i18n="label_labelstatic">Keep label upright</label>
                     <input id="labelStatic" type="checkbox" class="toggle" />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Show tonearm (record)</label>
+                    <label class="form-label" data-i18n="label_tonearm">Show tonearm (record)</label>
                     <input id="tonearm" type="checkbox" class="toggle" checked />
                   </div>
                 </div>
@@ -830,24 +1052,29 @@
           <div class="tab-panel" id="visual-tab">
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Visual Effects</h2>
+                <h2 class="card-title" data-i18n="card_visual_fx">Visual Effects</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_visual_fx">Turn cool effects on or off. 'Particles' adds
+                    falling rain/snow. 'Waveform'
+                    adds musical bars that move.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="toggle-group">
-                    <label class="form-label">Particle Effects</label>
+                    <label class="form-label" data-i18n="label_particles">Particle Effects</label>
                     <input id="particles" type="checkbox" class="toggle" />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Color Breathing</label>
+                    <label class="form-label" data-i18n="label_breathing">Color Breathing</label>
                     <input id="colorBreathing" type="checkbox" class="toggle" />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Waveform Visualizer</label>
+                    <label class="form-label" data-i18n="label_waveform">Waveform Visualizer</label>
                     <input id="waveform" type="checkbox" class="toggle" />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Album Blur Background</label>
+                    <label class="form-label" data-i18n="label_albumblur">Album Blur Background</label>
                     <input id="albumBlur" type="checkbox" class="toggle" />
                   </div>
                 </div>
@@ -856,24 +1083,29 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Animations</h2>
+                <h2 class="card-title" data-i18n="card_animations">Animations</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_animations">Choose how the player changes between songs.
+                    'Slide' or 'Fade' make
+                    transitions smooth.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Track Change Effect</label>
+                      <label class="form-label" data-i18n="label_transition">Track Change Effect</label>
                       <select id="transitionEffect" class="form-select">
-                        <option value="none">None</option>
-                        <option value="slide">Slide</option>
-                        <option value="fade">Fade</option>
-                        <option value="bounce">Bounce</option>
-                        <option value="zoom">Zoom</option>
-                        <option value="flip">Flip</option>
+                        <option value="none" data-i18n="opt_none">None</option>
+                        <option value="slide" data-i18n="opt_slide">Slide</option>
+                        <option value="fade" data-i18n="opt_fade">Fade</option>
+                        <option value="bounce" data-i18n="opt_bounce">Bounce</option>
+                        <option value="zoom" data-i18n="opt_zoom">Zoom</option>
+                        <option value="flip" data-i18n="opt_flip">Flip</option>
                       </select>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Animation Speed</label>
+                      <label class="form-label" data-i18n="label_animspeed">Animation Speed</label>
                       <div class="range-group">
                         <input id="animSpeed" class="range-input" type="range" min="0.5" max="2" step="0.1" value="1"
                           oninput="animSpeedOut.textContent=this.value" />
@@ -889,32 +1121,37 @@
           <div class="tab-panel" id="content-tab">
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Elements</h2>
+                <h2 class="card-title" data-i18n="card_elements">Elements</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_elements">Pick what you want to see. You can hide the
+                    'Progress bar' or 'Time' for a
+                    cleaner look.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="toggle-group">
-                    <label class="form-label">Status pill</label>
+                    <label class="form-label" data-i18n="label_status">Status pill</label>
                     <input id="showStatus" type="checkbox" class="toggle" checked />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Progress bar</label>
+                    <label class="form-label" data-i18n="label_progbar">Progress bar</label>
                     <input id="showProgress" type="checkbox" class="toggle" checked />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Time (elapsed/total)</label>
+                    <label class="form-label" data-i18n="label_time">Time (elapsed/total)</label>
                     <input id="showTime" type="checkbox" class="toggle" checked />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Title</label>
+                    <label class="form-label" data-i18n="label_title">Title</label>
                     <input id="showTitle" type="checkbox" class="toggle" checked />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Artist</label>
+                    <label class="form-label" data-i18n="label_artist">Artist</label>
                     <input id="showArtist" type="checkbox" class="toggle" checked />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Show Next (stacked)</label>
+                    <label class="form-label" data-i18n="label_next">Show Next (stacked)</label>
                     <input id="showNext" type="checkbox" class="toggle" />
                   </div>
                 </div>
@@ -923,20 +1160,32 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Text & Motion</h2>
+                <h2 class="card-title" data-i18n="card_textmotion">Text & Motion</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_textmotion">Handle long text. 'Scroll' makes long titles
+                    move so you can read them.
+                    'Auto-accent' matches colors to the album art.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="toggle-group">
-                    <label class="form-label">Scroll long text</label>
+                    <label class="form-label" data-i18n="label_scroll">Scroll long text</label>
                     <input id="scroll" type="checkbox" class="toggle" checked />
                   </div>
                   <div class="toggle-group">
-                    <label class="form-label">Auto-accent from album art</label>
+                    <label class="form-label" data-i18n="label_autoaccent">Auto-accent from album art</label>
                     <input id="autoAccent" type="checkbox" class="toggle" />
                   </div>
+                  <div id="autoAccentWarning" class="hidden"
+                    style="padding: 12px; background: rgba(255, 149, 0, 0.1); border: 1px solid rgba(255, 149, 0, 0.3); border-radius: var(--radius); font-size: 13px; color: var(--warning); margin-top: 8px;">
+                    <strong style="display: block; margin-bottom: 4px;" data-i18n="warn_autoaccent_title">⚠️ Auto Accent
+                      + Custom Breathing Color</strong>
+                    <span data-i18n="warn_autoaccent_msg">Auto-accent will change the main accent color dynamically, but
+                      your custom breathing color will remain fixed.</span>
+                  </div>
                   <div class="form-group">
-                    <label class="form-label">Marquee Speed</label>
+                    <label class="form-label" data-i18n="label_marqueespeed">Marquee Speed</label>
                     <div class="range-group">
                       <input id="marq" class="range-input" type="range" min="8" max="30" step="1" value="18"
                         oninput="marqOut.textContent=this.value" />
@@ -951,15 +1200,20 @@
           <div class="tab-panel" id="advanced-tab">
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Typography</h2>
+                <h2 class="card-title" data-i18n="card_typography">Typography</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_typography">Change the font style (text look). 'Text Shadow'
+                    adds a dark outline to make
+                    words stand out.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Font</label>
+                      <label class="form-label" data-i18n="label_font">Font</label>
                       <select id="font" class="form-select">
-                        <option value="">(default)</option>
+                        <option value="" data-i18n="opt_default">(default)</option>
                         <option value="inter">Inter</option>
                         <option value="rubik">Rubik</option>
                         <option value="montserrat">Montserrat</option>
@@ -968,10 +1222,10 @@
                       </select>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Text Shadow</label>
+                      <label class="form-label" data-i18n="label_textshadow">Text Shadow</label>
                       <select id="shadow" class="form-select">
-                        <option value="1">On</option>
-                        <option value="0">Off</option>
+                        <option value="1" data-i18n="opt_on">On</option>
+                        <option value="0" data-i18n="opt_off">Off</option>
                       </select>
                     </div>
                   </div>
@@ -981,35 +1235,63 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Colors & Custom</h2>
+                <h2 class="card-title" data-i18n="card_colors">Colors & Custom</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_colors">For advanced users: override the theme colors with
+                    your own specific
+                    branding colors.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">Color Mode</label>
+                      <label class="form-label" data-i18n="label_colormode">Color Mode</label>
                       <select id="colorMode" class="form-select">
-                        <option value="theme">Theme</option>
-                        <option value="custom">Custom</option>
+                        <option value="theme" data-i18n="opt_theme">Theme</option>
+                        <option value="custom" data-i18n="opt_custom">Custom</option>
                       </select>
                     </div>
                   </div>
                   <div id="colorsBlock" class="form-section">
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Accent Color</label>
+                        <label class="form-label" data-i18n="label_accent">Accent Color</label>
                         <input id="accent" type="color" class="color-picker" value="#1db954" />
                       </div>
                       <div class="form-group">
-                        <label class="form-label">Text Color</label>
+                        <label class="form-label" data-i18n="label_text">Text Color</label>
                         <input id="text" type="color" class="color-picker" value="#eaeaea" />
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Muted Color</label>
+                        <label class="form-label" data-i18n="label_muted">Muted Color</label>
                         <input id="muted" type="color" class="color-picker" value="#b6bcc4" />
                       </div>
+                      <div class="form-group">
+                        <label class="form-label" data-i18n="label_particle_color">Particle Color</label>
+                        <input id="particleColor" type="color" class="color-picker" value="#ffffff" />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label" data-i18n="label_custom_breathing">Custom Breathing Color</label>
+                        <input id="breathingColor" type="color" class="color-picker" value="#1db954" />
+                      </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="toggle-group" style="margin-bottom: 8px;">
+                      <label class="form-label" data-i18n="label_use_custom_breathing">Use custom breathing color
+                        instead of accent color</label>
+                      <input id="useCustomBreathing" type="checkbox" class="toggle" />
+                    </div>
+                    <div id="autoAccentWarning2" class="hidden"
+                      style="padding: 12px; background: rgba(255, 149, 0, 0.1); border: 1px solid rgba(255, 149, 0, 0.3); border-radius: var(--radius); font-size: 13px; color: var(--warning);">
+                      <strong style="display: block; margin-bottom: 4px;" data-i18n="warn_autoaccent_title">⚠️ Auto
+                        Accent + Custom Breathing Color</strong>
+                      <span data-i18n="warn_autoaccent_msg">Auto-accent will change the main accent color dynamically,
+                        but your custom breathing color will remain fixed.</span>
                     </div>
                   </div>
                 </div>
@@ -1018,16 +1300,21 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Background</h2>
+                <h2 class="card-title" data-i18n="card_background">Background</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_background">Control the box behind the player. 'Transparent'
+                    removes the box entirely.
+                  </div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
                   <div class="toggle-group">
-                    <label class="form-label">Transparent panel</label>
+                    <label class="form-label" data-i18n="label_transparent_panel">Transparent panel</label>
                     <input id="transparent" type="checkbox" class="toggle" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Panel Opacity</label>
+                    <label class="form-label" data-i18n="label_panel_opacity">Panel Opacity</label>
                     <div class="range-group">
                       <input id="panelAlpha" class="range-input" type="range" min="0" max="100" step="1" value="72"
                         oninput="paOut.textContent=this.value" />
@@ -1035,7 +1322,7 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Panel Color</label>
+                    <label class="form-label" data-i18n="label_panel_color">Panel Color</label>
                     <input id="panelColor" type="color" class="color-picker" value="#121212" />
                   </div>
                 </div>
@@ -1044,11 +1331,65 @@
 
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Quick Actions</h2>
+                <h2 class="card-title" data-i18n="card_visual_settings">Visual Effects Settings</h2>
+                <div class="help-icon">?
+                  <div class="help-tooltip" data-i18n="help_visual_settings">Fine-tune the effects. Adjust how many
+                    particles appear or how fast the
+                    colors pulse.</div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-section">
-                  <button id="transparentPreset" class="btn-outline">1-click Transparent</button>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="label_breathing_intensity">Breathing Intensity</label>
+                    <div class="range-group">
+                      <input id="breathingIntensity" class="range-input" type="range" min="0" max="100" step="1"
+                        value="100" oninput="biOut.textContent=this.value" />
+                      <div class="range-value"><span id="biOut">100</span>%</div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="label_particle_count">Particle Count</label>
+                    <div class="range-group">
+                      <input id="particleCount" class="range-input" type="range" min="0" max="100" step="1" value="50"
+                        oninput="pcOut.textContent=this.value" />
+                      <div class="range-value"><span id="pcOut">50</span>%</div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="label_particle_opacity">Particle Opacity</label>
+                    <div class="range-group">
+                      <input id="particleOpacity" class="range-input" type="range" min="0" max="100" step="1" value="80"
+                        oninput="poOut.textContent=this.value" />
+                      <div class="range-value"><span id="poOut">80</span>%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title" data-i18n="card_quick_actions">Quick Actions</h2>
+              </div>
+              <div class="card-body">
+                <div class="form-section">
+                  <div style="display: grid; gap: 12px;">
+                    <div
+                      style="padding: 12px; background: var(--bg); border: 1px solid var(--border-light); border-radius: var(--radius); font-size: 13px; color: var(--text-light);">
+                      <strong style="color: var(--text-secondary); display: block; margin-bottom: 4px;"
+                        data-i18n="title_quick_transparent">🎯 Quick
+                        Transparent Mode</strong>
+                      <span data-i18n="desc_quick_transparent">Instantly removes panel background, blur, rounded
+                        corners, padding, and text shadow for a clean,
+                        transparent overlay.</span>
+                    </div>
+                    <button id="transparentPreset" class="btn"
+                      style="background: linear-gradient(135deg, var(--accent), var(--success)); font-weight: 600; padding: 14px 20px; box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3); transition: all 0.2s ease;"
+                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(29, 185, 84, 0.4)'"
+                      onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 12px rgba(29, 185, 84, 0.3)'">✨
+                      Apply Transparent Preset</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1056,13 +1397,15 @@
         </div>
       </aside>
 
+
+
       <section class="preview-area">
         <div class="preview-header">
           <div>
-            <h2 class="preview-title">Live Preview</h2>
-            <p class="preview-subtitle">Turn off demo mode to connect to Spotify</p>
+            <h2 class="preview-title" data-i18n="preview_title">Live Preview</h2>
+            <p class="preview-subtitle" data-i18n="preview_subtitle">Turn off demo mode to connect to Spotify</p>
           </div>
-          <div class="badge">Resize to test different scales</div>
+          <div class="badge" data-i18n="badge_resize">Resize to test different scales</div>
         </div>
         <div class="preview-content">
           <iframe id="preview" class="preview-iframe" src="" allow="clipboard-read; clipboard-write"></iframe>
@@ -1072,6 +1415,233 @@
   </div>
 
   <script>
+    // Internationalization System
+    const translations = {
+      en: {
+        tab_basic: "Basic", tab_visual: "Visual", tab_content: "Content", tab_advanced: "Advanced",
+        card_quickstart: "Quick Start",
+        help_quickstart: "Start here! Click a 'Quick Preset' below to instantly change the look. Then COPY the 'Generated URL' at the bottom and paste it into OBS.",
+        label_baseurl: "Base URL", label_presets: "Quick Presets",
+        btn_record: "Record", btn_card: "Card", btn_bar: "Bar", btn_stacked: "Stacked", btn_lofi: "Lo-Fi", btn_cozy: "Cozy", btn_minimal: "Ultra Minimal",
+        label_generated: "Generated URL", btn_openpreview: "Open Preview", badge_copyurl: "Copy this URL into OBS → Browser Source",
+
+        card_layout: "Layout & Style",
+        help_layout: "Choose the shape of your player. 'Vinyl' spins, 'Card' is square. 'Theme' sets the color scheme instantly.",
+        label_layout: "Layout",
+        opt_record: "Record (Vinyl)", opt_card: "Card (Cover)", opt_bar: "Bar (Minimal)", opt_stacked: "Stacked (Center)", opt_compact: "Compact (Mini)",
+        opt_wide: "Wide (Cinematic)", opt_split: "Split (Dual)", opt_floating: "Floating (Overlay)", opt_corner: "Corner (Tiny)", opt_ticker: "Ticker (Scroll)",
+        label_media_pos: "Media Position",
+        opt_left: "Left", opt_right: "Right", opt_center: "Center", opt_top: "Top", opt_bottom: "Bottom",
+        label_theme: "Theme",
+        label_accent_style: "Accent Style",
+        opt_solid: "Solid", opt_glow: "Glow", opt_gradient: "Gradient", opt_pulse: "Pulse", opt_rainbow: "Rainbow",
+
+        card_sizing: "Sizing & Positioning",
+        help_sizing: "Controls for size and space. Use 'Media Size' to make the album art bigger or smaller.",
+        label_mediasize: "Media Size", label_progheight: "Progress Height", label_titlesize: "Title Size", label_artistsize: "Artist Size",
+        label_progwidth: "Progress Width", label_radius: "Corner Radius", label_blur: "Blur", label_padding: "Safe Padding",
+        label_outline: "Title Outline", label_textalign: "Text Alignment",
+        opt_auto: "Auto (follows media)",
+
+        card_behavior: "Behavior & Visibility",
+        help_behavior: "Decide what happens during playback. 'Spin while playing' animates the vinyl. 'Compact' removes extra spacing.",
+        label_compact: "Compact spacing", label_spin: "Spin while playing", label_labelstatic: "Keep label upright", label_tonearm: "Show tonearm (record)",
+
+        card_visual_fx: "Visual Effects",
+        help_visual_fx: "Turn cool effects on or off. 'Particles' adds falling rain/snow. 'Waveform' adds musical bars that move.",
+        label_particles: "Particle Effects", label_breathing: "Color Breathing", label_waveform: "Waveform Visualizer", label_albumblur: "Album Blur Background",
+
+        card_animations: "Animations",
+        help_animations: "Choose how the player changes between songs. 'Slide' or 'Fade' make transitions smooth.",
+        label_transition: "Track Change Effect",
+        opt_none: "None", opt_slide: "Slide", opt_fade: "Fade", opt_bounce: "Bounce", opt_zoom: "Zoom", opt_flip: "Flip",
+        label_animspeed: "Animation Speed",
+
+        card_elements: "Elements",
+        help_elements: "Pick what you want to see. You can hide the 'Progress bar' or 'Time' for a cleaner look.",
+        label_status: "Status pill", label_progbar: "Progress bar", label_time: "Time (elapsed/total)", label_title: "Title", label_artist: "Artist", label_next: "Show Next (stacked)",
+
+        card_textmotion: "Text & Motion",
+        help_textmotion: "Handle long text. 'Scroll' makes long titles move so you can read them. 'Auto-accent' matches colors to the album art.",
+        label_scroll: "Scroll long text", label_autoaccent: "Auto-accent from album art", label_marqueespeed: "Marquee Speed",
+        warn_autoaccent_title: "⚠️ Auto Accent + Custom Breathing Color",
+        warn_autoaccent_msg: "Auto-accent will change the main accent color dynamically, but your custom breathing color will remain fixed.",
+
+        card_typography: "Typography",
+        help_typography: "Change the font style (text look). 'Text Shadow' adds a dark outline to make words stand out.",
+        label_font: "Font", opt_default: "(default)",
+        label_textshadow: "Text Shadow", opt_on: "On", opt_off: "Off",
+
+        card_colors: "Colors & Custom",
+        help_colors: "For advanced users: override the theme colors with your own specific branding colors.",
+        label_colormode: "Color Mode", opt_theme: "Theme", opt_custom: "Custom",
+        label_accent: "Accent Color", label_text: "Text Color", label_muted: "Muted Color", label_particle_color: "Particle Color",
+        label_custom_breathing: "Custom Breathing Color", label_use_custom_breathing: "Use custom breathing color instead of accent color",
+
+        card_background: "Background",
+        help_background: "Control the box behind the player. 'Transparent' removes the box entirely.",
+        label_transparent_panel: "Transparent panel", label_panel_opacity: "Panel Opacity", label_panel_color: "Panel Color",
+
+        card_visual_settings: "Visual Effects Settings",
+        help_visual_settings: "Fine-tune the effects. Adjust how many particles appear or how fast the colors pulse.",
+        label_breathing_intensity: "Breathing Intensity", label_particle_count: "Particle Count", label_particle_opacity: "Particle Opacity",
+
+        card_quick_actions: "Quick Actions",
+        title_quick_transparent: "🎯 Quick Transparent Mode",
+        desc_quick_transparent: "Instantly removes panel background, blur, rounded corners, padding, and text shadow for a clean, transparent overlay.",
+        btn_apply_transparent: "✨ Apply Transparent Preset",
+
+        preview_title: "Live Preview", preview_subtitle: "Turn off demo mode to connect to Spotify", badge_resize: "Resize to test different scales",
+        toggle_light: "Light Mode", toggle_dark: "Dark Mode"
+      },
+      it: {
+        tab_basic: "Base", tab_visual: "Effetti", tab_content: "Contenuti", tab_advanced: "Avanzate",
+        card_quickstart: "Avvio Rapido",
+        help_quickstart: "Inizia qui! Clicca un 'Preset Rapido' qui sotto per cambiare subito stile. Poi COPIA l'URL Generato in basso e incollalo in OBS.",
+        label_baseurl: "URL Base", label_presets: "Preset Rapidi",
+        btn_record: "Vinile", btn_card: "Scheda", btn_bar: "Barra", btn_stacked: "Impilato", btn_lofi: "Lo-Fi", btn_cozy: "Cozy", btn_minimal: "Ultra Minimal",
+        label_generated: "URL Generato", btn_openpreview: "Apri Anteprima", badge_copyurl: "Copia questo URL in OBS → Sorgente Browser",
+
+        card_layout: "Layout & Stile",
+        help_layout: "Scegli la forma del player. 'Vinile' gira, 'Scheda' è quadrata. 'Tema' imposta subito i colori.",
+        label_layout: "Layout",
+        opt_record: "Record (Vinile)", opt_card: "Card (Copertina)", opt_bar: "Bar (Barra)", opt_stacked: "Stacked (Centro)", opt_compact: "Compact (Mini)",
+        opt_wide: "Wide (Cinema)", opt_split: "Split (Doppio)", opt_floating: "Floating (Sovraimp.)", opt_corner: "Corner (Angolo)", opt_ticker: "Ticker (Scorrimento)",
+        label_media_pos: "Posizione del Media",
+        opt_left: "Sinistra", opt_right: "Destra", opt_center: "Centro", opt_top: "Alto", opt_bottom: "Basso",
+        label_theme: "Tema",
+        label_accent_style: "Stile Accento",
+        opt_solid: "Solido", opt_glow: "Bagliore", opt_gradient: "Sfumatura", opt_pulse: "Pulsante", opt_rainbow: "Arcobaleno",
+
+        card_sizing: "Dimensioni & Posizione",
+        help_sizing: "Controlla dimensioni e spazi. Usa 'Dimensione Media' per ingrandire o rimpicciolire la copertina.",
+        label_mediasize: "Dimensione Media", label_progheight: "Altezza Progresso", label_titlesize: "Testo Titolo", label_artistsize: "Testo Artista",
+        label_progwidth: "Larghezza Progresso", label_radius: "Raggio Bordi", label_blur: "Sfocatura", label_padding: "Spaziatura Sicura",
+        label_outline: "Bordo Titolo", label_textalign: "Allineamento Testo",
+        opt_auto: "Auto (segui media)",
+
+        card_behavior: "Comportamento",
+        help_behavior: "Decidi cosa succede durante la riproduzione. 'Gira...' anima il vinile. 'Compatto' rimuove spazi extra.",
+        label_compact: "Spaziatura compatta", label_spin: "Gira durante riprod.", label_labelstatic: "Etichetta dritta", label_tonearm: "Mostra braccio (vinyl)",
+
+        card_visual_fx: "Effetti Visivi",
+        help_visual_fx: "Attiva effetti speciali. 'Particelle' aggiunge pioggia/neve. 'Waveform' aggiunge barre musicali animate.",
+        label_particles: "Effetto Particelle", label_breathing: "Respiro Colore", label_waveform: "Visualizzatore Waveform", label_albumblur: "Sfondo Sfocato Album",
+
+        card_animations: "Animazioni",
+        help_animations: "Scegli come cambia il player tra le canzoni. 'Slide' o 'Fade' rendono il passaggio fluido.",
+        label_transition: "Transizione Traccia",
+        opt_none: "Nessuna", opt_slide: "Scorrimento", opt_fade: "Dissolvenza", opt_bounce: "Rimbalzo", opt_zoom: "Zoom", opt_flip: "Ribaltamento",
+        label_animspeed: "Velocità Animazione",
+
+        card_elements: "Elementi",
+        help_elements: "Scegli cosa vedere. Puoi nascondere la 'Barra progresso' o il 'Tempo' per un look più pulito.",
+        label_status: "Pillola Status", label_progbar: "Barra Progresso", label_time: "Tempo (trascorso/tot)", label_title: "Titolo", label_artist: "Artista", label_next: "Mostra Prossimo (stacked)",
+
+        card_textmotion: "Testo & Movimento",
+        help_textmotion: "Gestisci testi lunghi. 'Scorrimento' muove i titoli lunghi per leggerli. 'Auto-accento' colora in base alla copertina.",
+        label_scroll: "Scorri testi lunghi", label_autoaccent: "Auto-accento da copertina", label_marqueespeed: "Velocità Scorrimento",
+        warn_autoaccent_title: "⚠️ Auto Accento + Colore Respiro Custom",
+        warn_autoaccent_msg: "L'Auto-accento cambierà il colore principale dinamicamente, ma il tuo colore 'Respiro' rimarrà fisso.",
+
+        card_typography: "Tipografia",
+        help_typography: "Cambia lo stile del testo. 'Ombreggiatura' aggiunge un contorno scuro per risaltare le parole.",
+        label_font: "Font", opt_default: "(predefinito)",
+        label_textshadow: "Ombreggiatura", opt_on: "Acceso", opt_off: "Spento",
+
+        card_colors: "Colori & Custom",
+        help_colors: "Per utenti esperti: sovrascrivi i colori del tema con i tuoi colori specifici.",
+        label_colormode: "Modalità Colore", opt_theme: "Tema", opt_custom: "Manuale",
+        label_accent: "Colore Accento", label_text: "Colore Testo", label_muted: "Colore Secondario", label_particle_color: "Colore Particelle",
+        label_custom_breathing: "Colore Respiro Custom", label_use_custom_breathing: "Usa colore respiro custom invece dell'accento",
+
+        card_background: "Sfondo",
+        help_background: "Controlla il box dietro il player. 'Trasparente' rimuove completamente il box.",
+        label_transparent_panel: "Pannello Trasparente", label_panel_opacity: "Opacità Pannello", label_panel_color: "Colore Pannello",
+
+        card_visual_settings: "Impostazioni Effetti",
+        help_visual_settings: "Regola l'intensità. Decide quante particelle appaiono o quanto velocemente pulsa il colore.",
+        label_breathing_intensity: "Intensità Respiro", label_particle_count: "Conteggio Particelle", label_particle_opacity: "Opacità Particelle",
+
+        card_quick_actions: "Azioni Rapide",
+        title_quick_transparent: "🎯 Modalità Trasparente Rapida",
+        desc_quick_transparent: "Rimuove istantaneamente sfondo, sfocatura, bordi arrotondati e ombre per un overlay pulito e trasparente.",
+        btn_apply_transparent: "✨ Applica Preset Trasparente",
+
+        preview_title: "Anteprima Live", preview_subtitle: "Disattiva demo per connettere Spotify", badge_resize: "Ridimensiona per testare",
+        toggle_light: "Light Mode", toggle_dark: "Dark Mode"
+      }
+    };
+
+    function setLanguage(lang) {
+      if (!translations[lang]) return;
+      document.documentElement.lang = lang;
+
+      // Update text content for elements with data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+          // If input button, update value? No, buttons use textContent usually.
+          // Exception: Quick Presets buttons use textContent.
+          el.textContent = translations[lang][key];
+        }
+      });
+
+      // Update Theme Toggle Label explicitly
+      const themeLabel = document.querySelector('.theme-toggle-label');
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      if (themeLabel) {
+        themeLabel.textContent = currentTheme === 'light' ? translations[lang].toggle_dark : translations[lang].toggle_light;
+      }
+
+      localStorage.setItem('lang', lang);
+    }
+
+    // Language Selector Event
+    const langSelector = document.getElementById('lang-selector');
+    if (langSelector) {
+      langSelector.addEventListener('change', (e) => {
+        setLanguage(e.target.value);
+      });
+
+      // Init Check
+      const savedLang = localStorage.getItem('lang') || 'en';
+      langSelector.value = savedLang;
+      setLanguage(savedLang);
+    }
+
+    // Theme toggle functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      // Update icon
+      const icon = document.querySelector('.theme-toggle-icon');
+      const label = document.querySelector('.theme-toggle-label');
+      if (newTheme === 'light') {
+        icon.textContent = '☀️';
+        label.textContent = 'Dark Mode';
+      } else {
+        icon.textContent = '🌙';
+        label.textContent = 'Light Mode';
+      }
+    }
+
+    // Load saved theme or default to dark
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'light') {
+        const icon = document.querySelector('.theme-toggle-icon');
+        const label = document.querySelector('.theme-toggle-label');
+        icon.textContent = '☀️';
+        label.textContent = 'Dark Mode';
+      }
+    })();
+
     const $ = id => document.getElementById(id);
     const els = {
       base: $('base'), layout: $('layout'), align: $('align'), theme: $('theme'), accentstyle: $('accentstyle'),
@@ -1087,6 +1657,8 @@
 
       font: $('font'), shadow: $('shadow'), colorMode: $('colorMode'), accent: $('accent'), text: $('text'), muted: $('muted'),
       transparent: $('transparent'), panelAlpha: $('panelAlpha'), panelColor: $('panelColor'),
+      breathingIntensity: $('breathingIntensity'), breathingColor: $('breathingColor'), useCustomBreathing: $('useCustomBreathing'),
+      particleCount: $('particleCount'), particleOpacity: $('particleOpacity'), particleColor: $('particleColor'),
       demo: $('demo'), transparentPreset: $('transparentPreset'),
       url: $('url'), copy: $('copy'), open: $('open'), reset: $('reset'), preview: $('preview'),
       colorsBlock: $('colorsBlock')
@@ -1101,23 +1673,41 @@
         if (p === 'card') { setState({ layout: 'card', align: 'left', theme: 'obsdark', accentstyle: 'solid', disc: 220, progressWidth: 100, textAlign: 'auto', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 1, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 0, transitionEffect: 'none', animSpeed: 1, ...defSizes }); }
         if (p === 'bar') { setState({ layout: 'bar', align: 'left', theme: 'minimal', accentstyle: 'solid', disc: 0, progressWidth: 100, textAlign: 'left', compact: 1, spin: 0, labelStatic: 0, tonearm: 0, showStatus: 0, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 0, transitionEffect: 'none', animSpeed: 1, titlesize: 16, artistsize: 13 }); }
         if (p === 'stacked') { setState({ layout: 'stacked', align: 'center', theme: 'elegant', accentstyle: 'solid', disc: 180, progressWidth: 100, textAlign: 'center', compact: 0, spin: 1, labelStatic: 0, tonearm: 1, showStatus: 1, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 0, transitionEffect: 'none', animSpeed: 1, ...defSizes }); }
-        if (p === 'transparent') { setState({ layout: 'card', align: 'left', theme: 'minimal', accentstyle: 'solid', disc: 200, progressWidth: 100, textAlign: 'auto', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 1, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 0, transitionEffect: 'none', animSpeed: 1, transparent: 1, ...defSizes }); }
-        if (p === 'gaming') { setState({ layout: 'compact', align: 'right', theme: 'gaming', accentstyle: 'glow', disc: 200, progressWidth: 100, textAlign: 'auto', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 0, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 1, colorBreathing: 1, waveform: 0, albumBlur: 0, transitionEffect: 'slide', animSpeed: 1.2, titlesize: 20, artistsize: 13 }); }
         if (p === 'lofi') { setState({ layout: 'wide', align: 'center', theme: 'lofi', accentstyle: 'solid', disc: 160, progressWidth: 80, textAlign: 'center', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 1, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 1, waveform: 0, albumBlur: 1, transitionEffect: 'fade', animSpeed: 0.8, ...defSizes }); }
-        if (p === 'cyberpunk') { setState({ layout: 'floating', align: 'right', theme: 'cyberpunk', accentstyle: 'gradient', disc: 140, progressWidth: 100, textAlign: 'left', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 1, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 1, colorBreathing: 1, waveform: 1, albumBlur: 0, transitionEffect: 'slide', animSpeed: 1.5, ...defSizes }); }
-        if (p === 'elegant') { setState({ layout: 'split', align: 'center', theme: 'elegant', accentstyle: 'solid', disc: 200, progressWidth: 90, textAlign: 'center', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 1, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 1, transitionEffect: 'fade', animSpeed: 1, ...defSizes }); }
-        if (p === 'party') { setState({ layout: 'ticker', align: 'left', theme: 'party', accentstyle: 'glow', disc: 60, progressWidth: 100, textAlign: 'left', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 0, showProgress: 0, showTime: 0, showTitle: 1, showArtist: 1, showNext: 0, particles: 1, colorBreathing: 1, waveform: 1, albumBlur: 0, transitionEffect: 'bounce', animSpeed: 2, titlesize: 28, artistsize: 18 }); }
         if (p === 'cozy') { setState({ layout: 'corner', align: 'right', theme: 'cozy', accentstyle: 'solid', disc: 60, progressWidth: 100, textAlign: 'right', compact: 1, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 0, showProgress: 0, showTime: 0, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 1, waveform: 0, albumBlur: 1, transitionEffect: 'fade', animSpeed: 0.7, titlesize: 16, artistsize: 12 }); }
-        if (p === 'streamer') { setState({ layout: 'floating', align: 'right', theme: 'neon', accentstyle: 'glow', disc: 120, progressWidth: 100, textAlign: 'left', compact: 0, spin: 1, labelStatic: 0, tonearm: 0, showStatus: 1, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 0, transitionEffect: 'none', animSpeed: 1, ...defSizes }); }
-        if (p === 'focus') { setState({ layout: 'compact', align: 'left', theme: 'focus', accentstyle: 'solid', disc: 80, progressWidth: 100, textAlign: 'left', compact: 1, spin: 0, labelStatic: 0, tonearm: 0, showStatus: 0, showProgress: 1, showTime: 1, showTitle: 1, showArtist: 1, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 0, transitionEffect: 'none', animSpeed: 1, titlesize: 18, artistsize: 12 }); }
         if (p === 'ultraminimal') { setState({ layout: 'bar', align: 'left', theme: 'monochrome', accentstyle: 'solid', disc: 0, progressWidth: 60, textAlign: 'left', compact: 1, spin: 0, labelStatic: 0, tonearm: 0, showStatus: 0, showProgress: 0, showTime: 0, showTitle: 1, showArtist: 0, showNext: 0, particles: 0, colorBreathing: 0, waveform: 0, albumBlur: 0, transitionEffect: 'none', animSpeed: 1, titlesize: 14, artistsize: 10 }); }
         render();
       });
     });
 
     function setState(s) {
+      const outMap = {
+        disc: 'discOut',
+        bar: 'barOut',
+        progressWidth: 'progWidthOut',
+        titlesize: 'tsOut',
+        artistsize: 'asOut',
+        radius: 'radOut',
+        blur: 'blurOut',
+        pad: 'padOut',
+        outline: 'outlineOut',
+        animSpeed: 'animSpeedOut',
+        breathingIntensity: 'biOut',
+        particleCount: 'pcOut',
+        particleOpacity: 'poOut',
+        marq: 'marqOut',
+        panelAlpha: 'paOut'
+      };
+
       for (const k in s) {
-        if (els[k] && 'value' in els[k]) els[k].value = s[k];
+        if (els[k] && 'value' in els[k]) {
+          els[k].value = s[k];
+          // Update output text if mapped
+          if (outMap[k]) {
+            const outEl = document.getElementById(outMap[k]);
+            if (outEl) outEl.textContent = s[k];
+          }
+        }
         if (els[k] && 'checked' in els[k]) els[k].checked = !!s[k];
       }
       render();
@@ -1141,6 +1731,8 @@
         font: els.font.value, shadow: els.shadow.value, colorMode: els.colorMode.value,
         accent: els.accent.value, text: els.text.value, muted: els.muted.value,
         transparent: +els.transparent.checked, panelAlpha: els.panelAlpha.value, panelColor: els.panelColor.value,
+        breathingIntensity: els.breathingIntensity.value, breathingColor: els.breathingColor.value, useCustomBreathing: +els.useCustomBreathing.checked,
+        particleCount: els.particleCount.value, particleOpacity: els.particleOpacity.value, particleColor: els.particleColor.value,
         demo: +els.demo.checked
       };
     }
@@ -1176,12 +1768,21 @@
       if (!s.scroll) q.set('scroll', '0');
       if (s.autoAccent) q.set('autoaccent', '1');
       if (s.marq && s.marq !== '18') q.set('marq', s.marq);
-      if (s.particles) q.set('particles', '1');
+      if (s.particles) q.set('particleeffect', '1');
       if (s.colorBreathing) q.set('colorbreathing', '1');
       if (s.waveform) q.set('waveform', '1');
       if (s.albumBlur) q.set('albumblur', '1');
       if (s.transitionEffect && s.transitionEffect !== 'none') q.set('transition', s.transitionEffect);
       if (s.animSpeed && s.animSpeed !== '1') q.set('animspeed', s.animSpeed);
+
+      // Breathing settings
+      if (s.breathingIntensity && s.breathingIntensity !== '100') q.set('breathingintensity', s.breathingIntensity);
+      if (s.useCustomBreathing && s.breathingColor) q.set('breathingcolor', s.breathingColor);
+
+      // Particle settings (count and opacity always apply)
+      if (s.particleCount && s.particleCount !== '50') q.set('particlecount', s.particleCount);
+      if (s.particleOpacity && s.particleOpacity !== '80') q.set('particleopacity', s.particleOpacity);
+
 
       if (s.font) q.set('font', s.font);
       if (s.shadow === '0') q.set('shadow', '0');
@@ -1189,6 +1790,8 @@
         if (s.accent) q.set('accent', s.accent);
         if (s.text) q.set('text', s.text);
         if (s.muted) q.set('muted', s.muted);
+        // Particle color only applies when in custom mode
+        if (s.particleColor && s.particleColor !== '#ffffff') q.set('particlecolor', s.particleColor);
       }
       if (s.transparent) q.set('transparent', '1');
       else {
@@ -1214,7 +1817,7 @@
       const timestamp = Date.now();
       const previewUrl = u + (u.includes('?') ? '&' : '?') + 'demo=1&_t=' + timestamp;
       const finalUrl = els.demo.checked ? previewUrl : (u + (u.includes('?') ? '&' : '?') + '_t=' + timestamp);
-      
+
       els.preview.src = finalUrl;
     }
 
@@ -1259,6 +1862,10 @@
       els.radius.value = 0;
       els.pad.value = 0;
       els.shadow.value = '0';
+      // Update the displayed text values
+      document.getElementById('blurOut').textContent = '0';
+      document.getElementById('radOut').textContent = '0';
+      document.getElementById('padOut').textContent = '0';
       render();
     };
 
@@ -1267,8 +1874,55 @@
       els.colorsBlock.classList.toggle('muted', !custom);
     }
 
+    function toggleAutoAccentWarning() {
+      const warning = document.getElementById('autoAccentWarning');
+      const warning2 = document.getElementById('autoAccentWarning2');
+      if (!els.autoAccent || !els.useCustomBreathing) return;
+      const showWarning = els.autoAccent.checked && els.useCustomBreathing.checked;
+      if (warning) warning.classList.toggle('hidden', !showWarning);
+      if (warning2) warning2.classList.toggle('hidden', !showWarning);
+    }
+
     els.colorMode.addEventListener('change', toggleColorsBlock);
+    if (els.autoAccent) {
+      els.autoAccent.addEventListener('change', toggleAutoAccentWarning);
+    }
+    if (els.useCustomBreathing) {
+      els.useCustomBreathing.addEventListener('change', toggleAutoAccentWarning);
+    }
     toggleColorsBlock();
+
+    // Handle dropdown arrow rotation
+    document.querySelectorAll('.form-select').forEach(select => {
+      let isOpen = false;
+
+      select.addEventListener('mousedown', (e) => {
+        // Toggle on click
+        if (document.activeElement === select) {
+          isOpen = !isOpen;
+        } else {
+          isOpen = true;
+        }
+
+        if (isOpen) {
+          select.classList.add('open');
+        } else {
+          select.classList.remove('open');
+        }
+      });
+
+      select.addEventListener('blur', () => {
+        // Remove open class when focus is lost
+        isOpen = false;
+        select.classList.remove('open');
+      });
+
+      select.addEventListener('change', () => {
+        // Close dropdown after selection
+        isOpen = false;
+        select.classList.remove('open');
+      });
+    });
 
     // Initial render
     render();
@@ -1276,4 +1930,3 @@
 </body>
 
 </html>
-
